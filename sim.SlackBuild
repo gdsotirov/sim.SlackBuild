@@ -1,0 +1,72 @@
+#!/bin/sh
+#
+# Slackware build script for Simple Instant Messenger
+# Written by Georgi D. Sotirov <gdsotirov@dir.bg>
+#
+
+. /etc/slack-package.conf
+
+NAME=sim
+VERSION=0.9.4.2
+BUILD=1
+TMP=${TMP:-/tmp}
+CWD=${CWD:-`pwd`}
+
+if [ ! -d $TMP ]; then
+  mkdir -p $TMP # location to build the source
+fi
+
+PKG=$TMP/package-$NAME
+if [ -d $PKG ]; then
+  rm -rf $PKG
+else
+  mkdir -p $PKG
+fi
+
+# Extract the sources
+SRC=$TMP/$NAME-$VERSION
+if [ -d $SRC ]; then
+  rm -rf $SRC
+fi
+cd $TMP
+tar -jxvf $CWD/$NAME-$VERSION.tar.bz2
+cd $SRC
+fix_source
+
+# Build the package
+CFLAGS=$SLKCFLAGS \
+CXXFLAGS=$SLKCFLAGS \
+./configure --build=$ARCH-pc-linux-gnu \
+            --prefix=/opt/kde
+make
+make DESTDIR=$PKG install
+
+# Prepare the package
+bin_perms $PKG
+( cd $PKG; strip_bin; strip_lib )
+create_docs $PKG $NAME-$VERSION
+
+# Service informations
+install -m 755 -d $PKG/install
+install -m 644 $CWD/slack-desc     $PKG/install
+install -m 644 $CWD/slack-required $PKG/install
+
+# Include build script
+install -m 755 -d $PKG/usr/src/slackbuilds/$NAME-$VERSION
+install -m 644 $CWD/$NAME.SlackBuild $PKG/usr/src/slackbuilds/$NAME-$VERSION
+install -m 644 $CWD/slack-desc       $PKG/usr/src/slackbuilds/$NAME-$VERSION
+install -m 644 $CWD/slack-required   $PKG/usr/src/slackbuilds/$NAME-$VERSION
+
+PKGNAME=$NAME-${VERSION}-$ARCH-$BUILD$MYIN
+PKG_DIR=${PKG_DIR:-$TMP}
+cd $PKG
+makepkg -l y -c n $PKG_DIR/$PKGNAME.tgz
+md5sum $PKG_DIR/$PKGNAME.tgz > $PKG_DIR/$PKGNAME.tgz.md5
+cp $CWD/slack-desc $PKG_DIR/$PKGNAME.txt
+
+# Clean up (optionally)
+if [ "$1" = "--cleanup" ]; then
+  rm -rf $SRC
+  rm -rf $PKG
+fi
+

@@ -1,0 +1,13 @@
+   |-----handy-ruler------------------------------------------------------| 
+sim: SIM-IM (SIM Instant Messenger)
+sim:
+sim: SIM-IM is a free software package licensed under the GNU General
+sim: Public License (GPL). SIM provides an plugins-based instant messenger
+sim: with support for various protocols. Based on the Qt library it works
+sim: on most operating systems with X11, MS Windows and MacOS X.
+sim: 
+sim:
+sim:
+sim: Packaged by Georgi D. Sotirov <gdsotirov@dir.bg>
+sim:
+
