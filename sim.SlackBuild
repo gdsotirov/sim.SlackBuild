@@ -7,7 +7,7 @@
 . /etc/slack-package.conf
 
 NAME=sim
-VERSION=0.9.4.2
+VERSION=0.9.4.3
 BUILD=1
 TMP=${TMP:-/tmp}
 CWD=${CWD:-`pwd`}
