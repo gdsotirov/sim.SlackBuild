@@ -1,14 +1,16 @@
 #!/bin/sh
 #
-# Slackware build script for Simple Instant Messenger
+# Slackware build script for SIM Instant Messenger
 # Written by Georgi D. Sotirov <gdsotirov@dir.bg>
 #
 
-. /etc/slack-package.conf
+. ../slack-package.conf
 
 NAME=sim
 VERSION=0.9.4.3
 BUILD=1
+ARCH=${ARCH:-i486}
+
 TMP=${TMP:-/tmp}
 CWD=${CWD:-`pwd`}
 
@@ -36,14 +38,19 @@ fix_source
 # Build the package
 CFLAGS=$SLKCFLAGS \
 CXXFLAGS=$SLKCFLAGS \
-./configure --build=$ARCH-pc-linux-gnu \
-            --prefix=/opt/kde
+./configure --build=$ARCH-slackware-linux \
+            --host=$ARCH-slackware-linux \
+            --prefix=/usr \
+            --enable-shared=yes \
+            --enable-static=no
+
 make
 make DESTDIR=$PKG install
 
 # Prepare the package
 bin_perms $PKG
 ( cd $PKG; strip_bin; strip_lib )
+DOCFILES="$DOCFILES AUTHORS* TODO*"
 create_docs $PKG $NAME-$VERSION
 
 # Service informations
